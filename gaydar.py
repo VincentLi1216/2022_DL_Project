@@ -1,3 +1,4 @@
+# import lib
 import os
 import tensorflow as tf
 from tensorflow.keras.models import load_model
@@ -5,44 +6,43 @@ import cv2
 import numpy as np
 from matplotlib import pyplot as plt
 import mediapipe as mp
-import time
 from util_warning import *
 
 # init the mp_face_detection
 mp_face_detection = mp.solutions.face_detection
 mp_drawing = mp.solutions.drawing_utils
 
-#load the gaydar model
+# load the gaydar model
 model = load_model('models/imageclassifier2.h5')
 
-#predict how gay are you
+# predict how gay are you
 def prediction(img):
     import cv2
 
-    #if there's nothing pass in then return
+    # if there's nothing pass in then return
     if img is None:
         return
 
-    #convert to the correct color format
+    # convert to the correct color format
     img = cv2.cvtColor(img, cv2.COLOR_BGR2RGB)
 
-    #resize the image again just for sure
+    # resize the image again just for sure
     resize = tf.image.resize(img, (256, 256))
 
-    #predict the model
+    # predict the model
     yhat = model.predict(np.expand_dims(resize / 255, 0))
 
-    #print out the result
-    print(round(100-yhat[0,0]*100, 2) ,"% is Gay")
+    # print out the result
+    print(round(100 - yhat[0, 0] * 100, 2), "% is Gay")
 
-    #show the result
+    # show the result
     # todo: change the title of the window
     plt.imshow(img)
     plt.show()
 
 
 # use mp_face_detection to find the faces in the image than crop it to size 100*100 pixels in the format of .jpg
-def crop_face(img_path, to_show = False):
+def crop_face(img_path, to_show=False):
     with mp_face_detection.FaceDetection(model_selection=1, min_detection_confidence=0.9) as face_detection:
 
         # print out all the file it gets
@@ -70,8 +70,9 @@ def crop_face(img_path, to_show = False):
                 cv2.destroyWindow("Face Detected")
                 return crop_img(orig_image, detection, orig_shape, to_show=to_show)  # crop the img
 
-#to crop img
-def crop_img(img, detection, orig_shape, to_show = False):
+
+# to crop img
+def crop_img(img, detection, orig_shape, to_show=False):
     # get all the info to crop
     orig_width = orig_shape[0]
     orig_height = orig_shape[1]
@@ -81,14 +82,13 @@ def crop_img(img, detection, orig_shape, to_show = False):
     width = int(detection.location_data.relative_bounding_box.width * orig_width)
     height = int(detection.location_data.relative_bounding_box.height * orig_height)
 
-    img = img[ymin:ymin+height, xmin:xmin+width]  # got to reverse the order of x and y
+    img = img[ymin:ymin + height, xmin:xmin + width]  # got to reverse the order of x and y
 
     # show the img if necessary
-    if to_show == True:
+    if to_show:
         cv2.imshow("cropped", img)
         cv2.waitKey(0)
         cv2.destroyAllWindows()
-
 
     try:
         crp_img = cv2.resize(img, (256, 256))
@@ -100,29 +100,28 @@ def crop_img(img, detection, orig_shape, to_show = False):
         print("crop error")
         print("can Not crop the image")
 
-#the main func
-def main(folder_name = "test1/orig"):
 
-    #get all the file in the folder
+# the main func
+def main(folder_name="test1/orig"):
+    # get all the file in the folder,
     for idx, path in enumerate(os.listdir(folder_name)):
 
-        #only read the .jpg files
+        # only read the .jpg files
         if not path.endswith(".jpg"):
             continue
 
-        #print out img's name
+        # print out img's name
         print(path)
 
-        #show the orig img
+        # show the orig img
         image = cv2.imread(os.path.join(folder_name, path))
         cv2.imshow(path, image)
         cv2.waitKey(0)
         cv2.destroyWindow(path)
 
-        #firstly crop the img then predict it
+        # firstly crop the img then predict it
         prediction(crop_face(os.path.join(folder_name, path)))
 
 
 if __name__ == "__main__":
     main("test2/orig")
-
