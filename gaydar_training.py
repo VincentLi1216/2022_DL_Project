@@ -10,7 +10,7 @@ from tensorflow.keras.models import load_model
 data = tf.keras.utils.image_dataset_from_directory('data')
 data_iterator = data.as_numpy_iterator()
 
-#0 stands for Gay_faces and 1 stands for Straight_faces
+# 0 stands for Gay_faces and 1 stands for Straight_faces
 batch = data_iterator.next()
 
 fig, ax = plt.subplots(ncols=4, figsize=(20,20))
@@ -21,6 +21,7 @@ for idx, img in enumerate(batch[0][:4]):
 # preprocessing
 data = data.map(lambda x,y: (x/255, y))
 data.as_numpy_iterator().next()
+print()
 
 # split data
 train_size = int(len(data)*.7)
