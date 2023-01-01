@@ -23,5 +23,5 @@ def rename_jpgs(folder_name):
 
 
 
-main_folder = "Gay_faces"
+main_folder = "test3"
 rename_jpgs(main_folder + "/orig")

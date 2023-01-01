@@ -83,7 +83,7 @@ def crop_img(img, detection, orig_shape,path,idx, to_show = False):
         a = 0  # do nothing
 
     try:
-        img = resize(img, 100)
+        img = resize(img, 256)
         cv2.imwrite(path+"/"+IMAGE_NAMES[idx],img)
     except:
         # print out failed img's filename
