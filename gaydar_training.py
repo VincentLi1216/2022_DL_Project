@@ -21,7 +21,6 @@ for idx, img in enumerate(batch[0][:4]):
 # preprocessing
 data = data.map(lambda x,y: (x/255, y))
 data.as_numpy_iterator().next()
-print()
 
 # split data
 train_size = int(len(data)*.7)
@@ -40,7 +39,7 @@ model.add(Dropout(0.4))
 model.add(Conv2D(32, (3,3), 1, activation='relu'))
 model.add(MaxPooling2D())
 model.add(Dropout(0.4))
-model.add(Conv2D(16, (3,3), 1, activation='relu'))
+model.add(Conv2D(16, (3 ,3), 1, activation='relu'))
 model.add(MaxPooling2D())
 model.add(Dropout(0.4))
 model.add(Flatten())

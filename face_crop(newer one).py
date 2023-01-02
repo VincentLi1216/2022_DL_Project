@@ -17,7 +17,7 @@ def get_jpgs(folder_name):
     print("Getting all the file in", folder_name, ":")
     for r, d, f in os.walk(folder_name):
         for file in f:
-            if file.endswith(".jpg"):
+             if file.endswith(".jpg"):
                 file_paths.append(os.path.join(r, file))
                 file_names.append(file)
                 print(file)
