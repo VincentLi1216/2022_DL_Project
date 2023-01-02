@@ -16,12 +16,16 @@ mp_drawing = mp.solutions.drawing_utils
 model = load_model('models/imageclassifier2.h5')
 
 # predict how gay are you
-def prediction(img):
+def prediction(img, face_D_to_show, crop_to_show, result_to_show):
     import cv2
+
+
+    img = crop_face(image=img, face_D_to_show=face_D_to_show, crop_to_show=crop_to_show)
 
     # if there's nothing pass in then return
     if img is None:
-        return
+        return None
+
 
     # convert to the correct color format
     img = cv2.cvtColor(img, cv2.COLOR_BGR2RGB)
@@ -37,22 +41,25 @@ def prediction(img):
 
     # show the result
     # todo: change the title of the window
-    plt.imshow(img)
-    plt.show()
-
+    if result_to_show:
+        plt.imshow(img)
+        fig = plt.gcf()
+        fig.canvas.manager.set_window_title('Prediction')
+        plt.title("Why you Gay?")
+        plt.show()
+    return round(100 - yhat[0, 0] * 100, 2)
 
 # use mp_face_detection to find the faces in the image than crop it to size 100*100 pixels in the format of .jpg
-def crop_face(img_path, to_show=False):
+def crop_face(image, face_D_to_show, crop_to_show):
     with mp_face_detection.FaceDetection(model_selection=1, min_detection_confidence=0.9) as face_detection:
 
         # print out all the file it gets
         print("Working process:")
 
-        image = cv2.imread(img_path)  # read the img
+
         # progress_bar(idx, len(os.listdir(folder_name)))  # update the progress bar
         orig_shape = [image.shape[1], image.shape[0]]  # get the shape of the img
-        results = face_detection.process(cv2.cvtColor(image,
-                                                      cv2.COLOR_BGR2RGB))  # convert the BGR image to RGB and process it with MediaPipe Face Detection
+        results = face_detection.process(cv2.cvtColor(image,cv2.COLOR_BGR2RGB))  # convert the BGR image to RGB and process it with MediaPipe Face Detection
         orig_image = image.copy()  # get the orig copy
 
         # no faces detected
@@ -65,14 +72,16 @@ def crop_face(img_path, to_show=False):
         if results.detections:
             for detection in results.detections:
                 mp_drawing.draw_detection(image, detection)
-                cv2.imshow("Face Detected", image)
-                cv2.waitKey(0)
-                cv2.destroyWindow("Face Detected")
-                return crop_img(orig_image, detection, orig_shape, to_show=to_show)  # crop the img
+                if face_D_to_show:
+                    cv2.imshow("Face Detected", image)
+                    cv2.waitKey(0)
+                    cv2.destroyWindow("Face Detected")
+
+                return crop_img(orig_image, detection, orig_shape, crop_to_show=crop_to_show)  # crop the img
 
 
 # to crop img
-def crop_img(img, detection, orig_shape, to_show=False):
+def crop_img(img, detection, orig_shape, crop_to_show):
     # get all the info to crop
     orig_width = orig_shape[0]
     orig_height = orig_shape[1]
@@ -85,7 +94,7 @@ def crop_img(img, detection, orig_shape, to_show=False):
     img = img[ymin:ymin + height, xmin:xmin + width]  # got to reverse the order of x and y
 
     # show the img if necessary
-    if to_show:
+    if crop_to_show:
         cv2.imshow("cropped", img)
         cv2.waitKey(0)
         cv2.destroyAllWindows()
@@ -120,7 +129,7 @@ def main(folder_name="test1/orig"):
         cv2.destroyWindow(path)
 
         # firstly crop the img then predict it
-        prediction(crop_face(os.path.join(folder_name, path)))
+        prediction(image, result_to_show=True, face_D_to_show=True, crop_to_show=True)
 
 
 if __name__ == "__main__":
