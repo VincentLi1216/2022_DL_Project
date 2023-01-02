@@ -71,4 +71,4 @@ plt.legend(loc="upper left")
 plt.show()
 
 # save the model
-model.save(os.path.join('models','imageclassifier3.h5'))
+model.save(os.path.join('models','imageclassifier4.h5'))
