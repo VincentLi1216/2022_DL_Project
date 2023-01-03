@@ -16,7 +16,7 @@ mp_drawing = mp.solutions.drawing_utils
 model = load_model('models/imageclassifier2.h5')
 
 # predict how gay are you
-def prediction(img, face_D_to_show, crop_to_show, result_to_show):
+def prediction(img, face_D_to_show, crop_to_show, result_to_show, to_print_result=True):
     import cv2
 
 
@@ -37,7 +37,8 @@ def prediction(img, face_D_to_show, crop_to_show, result_to_show):
     yhat = model.predict(np.expand_dims(resize / 255, 0))
 
     # print out the result
-    print(round(100 - yhat[0, 0] * 100, 2), "% is Gay")
+    if to_print_result:
+        print(round(100 - yhat[0, 0] * 100, 2), "% is Gay")
 
     # show the result
     # todo: change the title of the window
@@ -45,7 +46,7 @@ def prediction(img, face_D_to_show, crop_to_show, result_to_show):
         plt.imshow(img)
         fig = plt.gcf()
         fig.canvas.manager.set_window_title('Prediction')
-        plt.title("Why you Gay?")
+        plt.title("Why You Gay Test - " +  str(round(100 - yhat[0, 0] * 100, 2)) + "%")
         plt.show()
     return round(100 - yhat[0, 0] * 100, 2)
 

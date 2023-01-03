@@ -1,40 +1,21 @@
 import cv2
-import mediapipe as mp
 
-mp_face_detection = mp.solutions.face_detection
-mp_drawing = mp.solutions.drawing_utils
-
+# 選擇第二隻攝影機
 cap = cv2.VideoCapture(0)
 
+while(True):
+  # 從攝影機擷取一張影像
+  ret, frame = cap.read()
 
-# For webcam input:
-def face():
-  with mp_face_detection.FaceDetection(
-          model_selection=0, min_detection_confidence=0.5) as face_detection:
-    while cap.isOpened():
-      success, image = cap.read()
-      if not success:
-        print("Ignoring empty camera frame.")
-        # If loading a video, use 'break' instead of 'continue'.
-        continue
+  # 顯示圖片
+  cv2.imshow('frame', frame)
 
-      # To improve performance, optionally mark the image as not writeable to
-      # pass by reference.
-      image.flags.writeable = False
-      image = cv2.cvtColor(image, cv2.COLOR_BGR2RGB)
-      results = face_detection.process(image)
+  # 若按下 q 鍵則離開迴圈
+  if cv2.waitKey(1) & 0xFF == ord('q'):
+    break
 
-      # Draw the face detection annotations on the image.
-      image.flags.writeable = True
-      image = cv2.cvtColor(image, cv2.COLOR_RGB2BGR)
-      if results.detections:
-        for detection in results.detections:
-          mp_drawing.draw_detection(image, detection)
+# 釋放攝影機
+cap.release()
 
-      return image
-
-while True:
-  # Flip the image horizontally for a selfie-view display.
-  cv2.imshow('MediaPipe Face Detection', cv2.flip(face(), 1))
-  cv2.waitKey(0)
-  cap.release()
+# 關閉所有 OpenCV 視窗
+cv2.destroyAllWindows()

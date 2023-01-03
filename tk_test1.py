@@ -18,26 +18,30 @@ win.geometry("2000x1300")
 label =Label(win)
 label.grid(row=0, column=0)
 
-def auto_take():
-   print(len(screenshots))
-   if len(screenshots) < 5:
-      cap = cv2.VideoCapture(0)
-      img = cap.read()[1]
-      screenshots.append(img)
-      print("Screen Shot Numbers:" + str(len(screenshots)))
-
-
 
 screenshots = []
 predict_nums= []
-def shot_button_event():
+
+def shot_button_event(result_to_show=True):
    if len(screenshots) < 5:
-      cap = cv2.VideoCapture(0)
-      img = cap.read()[1]
-      screenshots.append(img)
+      new_cap = cv2.VideoCapture(0)
+      new_img = cap.read()[1]
+      screenshots.append(new_img)
       shot_bttn.config(text="Screen Shot " + str(len(screenshots)) + "/5")
    if len(screenshots) == 5:
-      predict_nums.append(prediction(screenshots[2], result_to_show=True, crop_to_show=False, face_D_to_show=False ))
+      for i in range(5):
+         predict_nums.append(prediction(screenshots[i], result_to_show=False, crop_to_show=False, face_D_to_show=False, to_print_result=False))
+      #print(predict_nums)
+      avg_predict = round(sum(predict_nums) / len(predict_nums),2)
+      crop_img = crop_face(screenshots[0], face_D_to_show=False, crop_to_show=False)
+      if result_to_show:
+         plt.imshow(cv2.cvtColor(crop_img, cv2.COLOR_BGR2RGB))
+         fig = plt.gcf()
+         fig.canvas.manager.set_window_title('Prediction')
+         plt.title("Why You Gay Test - " + str(avg_predict) + "%")
+         plt.show()
+
+
    #print("Screen Shot Numbers:" + str(len(screenshots)))
 
 
@@ -55,12 +59,12 @@ def show_frames():
    with mp_face_detection.FaceDetection(model_selection=0, min_detection_confidence=0.9) as face_detection:
       if len(screenshots) == 5:
         # Get the latest frame and convert into Image
-        cv2image = cv2.cvtColor(screenshots[2], cv2.COLOR_BGR2RGB)
+        cv2image = cv2.cvtColor(screenshots[4], cv2.COLOR_BGR2RGB)
         img = Image.fromarray(cv2image)
         # Convert image to PhotoImage
         imgtk = ImageTk.PhotoImage(image=img)
         label.imgtk = imgtk
-        label.configure(image=imgtk)
+        label.configure(image=imgtk, width=1280, height=720)
         # Repeat after an interval to capture continiously
         label.after(20, show_frames)
 
@@ -87,7 +91,7 @@ def show_frames():
          # Convert image to PhotoImage
          imgtk = ImageTk.PhotoImage(image=img)
          label.imgtk = imgtk
-         label.configure(image=imgtk)
+         label.configure(image=imgtk, width=1280, height=720)
          # Repeat after an interval to capture continiously
          label.after(20, show_frames)
 
