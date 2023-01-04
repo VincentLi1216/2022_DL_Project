@@ -4,9 +4,13 @@ from PIL import Image, ImageTk
 import cv2
 import mediapipe as mp
 from gaydar import *
+from util_fake_prediction_generator import *
+from tkinter import filedialog as fd
+from tkinter import ttk
 
 mp_face_detection = mp.solutions.face_detection
 mp_drawing = mp.solutions.drawing_utils
+
 
 # Create an instance of TKinter Window or frame
 win = Tk()
@@ -21,6 +25,46 @@ label.grid(row=0, column=0)
 
 screenshots = []
 predict_nums= []
+
+
+#todo: make a open file button
+def open_text_file():
+   # file type
+   filetypes = (
+      ('Image Files', '*.jpg'),
+      ('All files', '*.*')
+   )
+   # show the open file dialog
+   f = fd.askopenfile(filetypes=filetypes)
+   print(str(f))
+   # read the text file and show its content on the Text
+   img = cv2.imread(f)
+   cv2.imshow("img", img)
+   cv2.waitKey(0)
+   cv2.destroyWindow("img")
+
+   text.insert('1.0', f.readlines())
+
+
+# open file button
+open_button = ttk.Button(
+   win,
+   text='Open a File',
+   command=open_text_file
+)
+
+open_button.grid(column=3, row=1, sticky='w', padx=10, pady=10)
+
+
+
+
+
+
+
+
+
+
+
 
 def shot_button_event(result_to_show=True):
    if len(screenshots) < 5:
