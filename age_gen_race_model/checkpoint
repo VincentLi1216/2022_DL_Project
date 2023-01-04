@@ -1,0 +1,2 @@
+model_checkpoint_path: "pretrained_model_crop_part1_race_model_checkpoint.ckpt"
+all_model_checkpoint_paths: "pretrained_model_crop_part1_race_model_checkpoint.ckpt"
