@@ -15,7 +15,7 @@ def get_arguments():
     return arguments
 
 
-def draw_labels_and_boxes(img, boxes, result, margin):
+def draw_labels_and_boxes(img, boxes, result, margin, to_modify_img):
     class_ids_age = np.argmax(result[0], axis=1)
     class_ids_gender = np.argmax(result[1], axis=1)
 
@@ -68,11 +68,9 @@ def draw_labels_and_boxes(img, boxes, result, margin):
         #------------------------------------------------------------------------------
 
 
-
-        cv2.rectangle(img, (x1, y1), (x2, y2), color, 2)
-        text = 'Gender: {}. Age: {}'.format(gender, age)
-        cv2.putText(img, text, (left - 70, top - 10), cv2.FONT_HERSHEY_SIMPLEX, 0.5, (255, 0, 0), 2)
-
-
+        if to_modify_img:
+            cv2.rectangle(img, (x1, y1), (x2, y2), color, 2)
+            text = 'Gender: {}. Age: {}'.format(gender, age)
+            cv2.putText(img, text, (left - 70, top - 10), cv2.FONT_HERSHEY_SIMPLEX, 0.5, (255, 0, 0), 2)
 
     return img, age, gender

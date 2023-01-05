@@ -5,6 +5,7 @@ import data_utils as utils
 from shuffle_net import ShuffleNet
 import config as cf
 from mtcnn import MTCNN
+import tensorflow as tf
 
 def main_age_gender_detection(image):
     # Set up arguments
@@ -29,8 +30,8 @@ def main_age_gender_detection(image):
     result = detector.detect_faces(image)
     end_time = time.time()
 
-    num_detected_face = len(result)
-    if num_detected_face == 0:
+    num_detected_face = 1
+    if len(result) == 0:
         print('No detected face')
         exit()
 
@@ -38,9 +39,9 @@ def main_age_gender_detection(image):
     faces = np.empty((num_detected_face, cf.IMAGE_SIZE, cf.IMAGE_SIZE, 3))
     print("Detected {} faces on {}s".format(num_detected_face, end_time - start_time))
 
-
+    print(result)
     # crop faces
-    for i in range(len(result)):
+    for i in range(1):
         bounding_box = result[i]['box']
         keypoints = result[i]['keypoints']
 
@@ -64,16 +65,15 @@ def main_age_gender_detection(image):
     result = model.predict(faces / 255.0)
 
     # Draw bounding boxes and labels on image
-    image, age, gender = utils.draw_labels_and_boxes(image, boxes, result, margin)
-
+    image, age, gender = utils.draw_labels_and_boxes(image, boxes, result, margin, to_modify_img=False)
 
     if image is None:
         exit()
 
-    image = cv2.resize(image, (img_w, img_h), cv2.INTER_AREA)
-    # cv2.imwrite('hoailinh_result.png', image)
+    # image = cv2.resize(image, (img_w, img_h), cv2.INTER_AREA)
+    # # cv2.imwrite('hoailinh_result.png', image)
     # cv2.imshow('img', image)
-
+    #
     # if cv2.waitKey(0) & 0xFF == ord('q'):
     #     exit()
 
@@ -84,26 +84,27 @@ def main_age_gender_detection(image):
 
 
 if __name__ == '__main__':
-    file_name = input('Photo you want to predict\nFilename: ')
-    img_path = '../utk_data/UTKFace/' + file_name + '.jpg'
+    # file_name = input('Photo you want to predict\nFilename: ')
+    img_path = 'test1/rename/2984c140-3196-46b4-a602-8f0a4449a918.jpg'
     img = cv2.imread(img_path)
 
-    main_age_gender_detection(img)
 
-    actual_age = file_name.split('_')[0]
-    actual_gender = file_name.split('_')[1]
+    print(main_age_gender_detection(img))
 
-    if actual_gender == '0':
-        actual_gender = 'Male'
-    elif actual_gender == '1':
-        actual_gender = 'Female'
-    else:
-        actual_gender = '?'
-    print("\nActual Age: {}\nActual Gender: {}".format(actual_age, actual_gender))
-
-    origin_image = cv2.imread(img_path)
-    # cv2.namedWindow('Origin_image', cv2.WINDOW_NORMAL)
-    cv2.imshow('Origin_image', origin_image)
-
-    if cv2.waitKey(0) & 0xFF == ord('q'):
-        exit()
+    # actual_age = file_name.split('_')[0]
+    # actual_gender = file_name.split('_')[1]
+    #
+    # if actual_gender == '0':
+    #     actual_gender = 'Male'
+    # elif actual_gender == '1':
+    #     actual_gender = 'Female'
+    # else:
+    #     actual_gender = '?'
+    # print("\nActual Age: {}\nActual Gender: {}".format(actual_age, actual_gender))
+    #
+    # origin_image = cv2.imread(img_path)
+    # # cv2.namedWindow('Origin_image', cv2.WINDOW_NORMAL)
+    # cv2.imshow('Origin_image', origin_image)
+    #
+    # if cv2.waitKey(0) & 0xFF == ord('q'):
+    #     exit()

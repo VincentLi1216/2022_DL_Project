@@ -1,7 +1,7 @@
 import numpy as np
 from tensorflow.keras import layers
 from tensorflow.keras.models import Model
-from tensorflow.keras.optimizers import Adam, SGD
+from tensorflow.keras.optimizers import Adam
 from tensorflow.keras.callbacks import ReduceLROnPlateau, ModelCheckpoint, LearningRateScheduler
 import config as cf
 from data_provider import Datasets

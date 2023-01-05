@@ -2,7 +2,6 @@ import tensorflow.keras as tk
 import config as cf
 import os
 import numpy as np
-from tensorflow.keras.preprocessing.image import ImageDataGenerator
 
 
 class Datasets(object):
