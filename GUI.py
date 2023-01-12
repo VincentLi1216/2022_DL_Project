@@ -220,13 +220,13 @@ exit_bttn_lbl.place(x=1366, y=694)
 #    global delta_x
 #    global delta_y
 #    if move == "left":
-#       delta_x -= 1
+#       delta_x -= x
 #    if move == "right":
-#       delta_x += 1
+#       delta_x += x
 #    if move == "up":
-#       delta_y -= 1
+#       delta_y -= x
 #    if move == "down":
-#       delta_y += 1
+#       delta_y += x
 #    obj.place(x=1368+delta_x, y=694+delta_y)
 #    print("delta_x", delta_x)
 #    print("delta_y", delta_y)
@@ -247,6 +247,20 @@ exit_bttn_lbl.place(x=1366, y=694)
 # # intit down_bttn
 # down_bttn = Button(win, text="down", command=lambda:move(target, "down"))
 # down_bttn.grid(column=3, row=7)
+#
+# x = 1
+# def toggle_x():
+#    global x
+#    if x == 1:
+#       x = 10
+#    elif x == 10:
+#       x = 100
+#    elif x == 100:
+#       x = 1
+#    x_bttn.configure(text="x" + str(x))
+# # init x_bttn
+# x_bttn = Button(win, text="X" + str(x), command=toggle_x)
+# x_bttn.grid(column=3, row=8)
 
 # init open file button
 open_icon = Image.open("icons/folder.png")
